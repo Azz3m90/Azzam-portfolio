@@ -5,6 +5,7 @@
  */
 
 const elemToggleFunc = function (elem) { elem.classList.toggle("active"); }
+const elemToggleFunc1 = function (elem) { elem.classList.toggle("active"); }
 
 
 
@@ -103,3 +104,31 @@ if (localStorage.getItem("theme") === "light_theme") {
   document.body.classList.remove("light_theme");
   document.body.classList.add("dark_theme");
 }
+
+// Certificate toggle
+const certificateToggleBtns = document.querySelectorAll("[data-toggle-btn-certificate]");
+const certificateToggleBox = document.querySelector("[data-toggle-box-certificate]");
+const certificateBox = document.querySelector("[data-certificate-box-certificate]");
+
+for (let i = 0; i < certificateToggleBtns.length; i++) {
+  certificateToggleBtns[i].addEventListener("click", function () {
+    toggleCertificates(i);
+  });
+}
+
+// Function to toggle certificates
+function toggleCertificates(index) {
+  for (let i = 0; i < certificateToggleBtns.length; i++) {
+    if (i === index) {
+      certificateToggleBtns[i].classList.add("active");
+    } else {
+      certificateToggleBtns[i].classList.remove("active");
+    }
+  }
+  elemToggleFunc(certificateToggleBox);
+  elemToggleFunc(certificateBox);
+}
+
+
+
+

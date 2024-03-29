@@ -1349,3 +1349,107 @@ textarea.input-field {
 i{
   font-size: 60px;
 }
+
+/*-----------------------------------*\
+ * #certificate
+\*-----------------------------------*/
+
+.certificate { padding-block: var(--section-padding); }
+
+.certificate-content { margin-bottom: 50px; }
+
+.certificate-toggle {
+  background: var(--bg-secondary);
+  position: relative;
+  width: max-content;
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  border-radius: 100px;
+  box-shadow: var(--shadow-1);
+  z-index: 1;
+}
+
+.certificate-toggle::before {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  bottom: 5px;
+  width: 93px;
+  background: var(--raw-seinna);
+  border-radius: 100px;
+  transition: var(--transition-1);
+  z-index: -1;
+}
+
+.certificate-toggle.active::before {
+  left: 98px;
+  width: 94px;
+}
+
+.toggle-btn {
+  color: var(--color-primary);
+  font-family: var(--ff-poppins);
+  padding: 5px 25px;
+  transition: var(--transition-1);
+}
+
+.toggle-btn.active { color: var(--white); }
+
+.certificate-box.active .certificate-list,
+.certificate-box .tools-list { display: none; }
+
+.certificate-box .certificate-list,
+.certificate-box.active .tools-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+
+}
+
+.skill-card {
+  position: relative;
+  background: var(--bg-secondary);
+  width: 80px;
+  height: 80px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-12);
+  box-shadow: var(--shadow-1);
+  cursor: help;
+}
+
+.skill-card:hover .tooltip {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+
+
+
+  /**
+   * certificate
+   */
+
+  .certificate {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 50px;
+  }
+
+  .certificate-content { margin-bottom: 0; }
+
+  .certificate-toggle { margin-inline: 0; }
+
