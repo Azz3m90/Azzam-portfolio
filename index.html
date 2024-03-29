@@ -1068,33 +1068,55 @@
                         </div>
                     </div>
                     <script>
-                        emailjs.init("service_2ay6a4i");
+                        emailjs.init("ogDaW_i0RWFb6jjM9");
+                        const submitBtn = document.querySelector(".btn-submit");
+                    
                         document.getElementById("booking-form").addEventListener("submit", function(event) {
                             event.preventDefault(); // Prevent the form from submitting normally
-                            
+                    
                             // Get form values
                             const name = document.getElementById("name").value;
                             const email = document.getElementById("email").value;
                             const phone = document.getElementById("phone").value;
                             const message = document.getElementById("message").value;
-                        
-                            // Send email using EmailJS
-                            emailjs.send("service_2ay6a4i", "YOUR_TEMPLATE_ID", {
-                                name: name,
-                                email: email,
-                                phone: phone,
-                                message: message
-                            })
-                            .then(function(response) {
-                                console.log("Email sent successfully", response);
-                                alert("Email sent successfully");
-                            }, function(error) {
-                                console.error("Email failed to send", error);
-                                alert("Email failed to send");
-                            });
+                    
+                            // Disable the submit button while sending the email
+                            submitBtn.disabled = true;
+                            submitBtn.textContent = "Sending...";
+                    
+// Send email using EmailJS
+emailjs.send("service_2ay6a4i", "template_0tm7dw4", {
+    name: name,
+    email: email,
+    phone: phone,
+    message: message
+})
+.then(function(response) {
+    console.log("Email sent successfully", response);
+    // Send confirmation email to the sender
+    emailjs.send("service_2ay6a4i", "template_p40kp6m", {
+        sender_email: email // Assuming you have sender's email
+    })
+    .then(function(response) {
+        console.log("Confirmation email sent successfully to sender", response);                                
+    }, function(error) {
+        console.error("Confirmation email failed to send to sender", error);
+    });
+    submitBtn.classList.add("btn-success");
+    submitBtn.classList.add("btn");
+    submitBtn.textContent = "Email Sent Successfully";
+}, function(error) {
+    console.error("Email failed to send", error);
+    submitBtn.classList.add("btn-danger");
+    submitBtn.textContent = "Email Sending Failed";
+})
+.finally(function() {
+    // Re-enable the submit button after sending email
+    submitBtn.disabled = false;
+});
                         });
-                        
                     </script>
+                    
                 </section>
                 <div class="map-container">
                     <iframe
