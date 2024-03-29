@@ -1017,6 +1017,17 @@
                                 <ion-icon name="chatbubbles"></ion-icon>
                             </div>
                         </div>
+                        <div class="form-wrapper">
+                            <!-- CAPTCHA -->
+                            <h3><label for="captcha" id="captcha-question" class="form-label">Enter the answer:</label></h3>
+                            <div class="input-wrapper">
+                                
+                                <input type="hidden" id="captcha-answer">
+                                
+                                <input type="number" id="captcha" name="captcha" class="input-field" placeholder="Enter the right answer above please." required>
+                                <img id="captchaImage"  src="./images/captcha.png" alt="captcha" srcset="">
+                            </div>
+                        </div>
                         <button type="submit" class="btn btn-primary btn-submit">Send</button>
                     </form>
                     <style>
@@ -1069,58 +1080,104 @@
                     </div>
                     <script>
                         emailjs.init("ogDaW_i0RWFb6jjM9");
-                        const submitBtn = document.querySelector(".btn-submit");
-                    
+                        // Add event listener to the captcha input field
+                document.getElementById("captcha").addEventListener("focus", function() {
+                    // Change the src attribute of the image
+                    document.getElementById("captchaImage").src = "./images/captcha_focused.png";
+                });
+                        // Function to generate a random arithmetic question
+                        function generateCaptcha() {
+                            const num1 = Math.floor(Math.random() * 10);
+                            const num2 = Math.floor(Math.random() * 10);
+                            const operator = Math.random() < 0.5 ? '+' : '-';
+                            const captchaQuestion = `${num1} ${operator} ${num2}`;
+                            const captchaAnswer = operator === '+' ? num1 + num2 : num1 - num2;
+                            return { question: captchaQuestion, answer: captchaAnswer };
+                        }
+                
+                        // Function to validate the captcha
+                        function validateCaptcha(userAnswer) {
+                            const captchaAnswer = parseInt(document.getElementById('captcha-answer').value);
+                            return userAnswer === captchaAnswer;
+                        }
+                
+                        // Function to close the modal
+                        function closeModal() {
+                            document.getElementById('confirmationModal').style.display = 'none';
+                        }
+                
                         document.getElementById("booking-form").addEventListener("submit", function(event) {
                             event.preventDefault(); // Prevent the form from submitting normally
-                    
+                
                             // Get form values
                             const name = document.getElementById("name").value;
                             const email = document.getElementById("email").value;
                             const phone = document.getElementById("phone").value;
                             const message = document.getElementById("message").value;
-                    
+                            const userCaptchaAnswer = parseInt(document.getElementById('captcha').value);
+                
+                            // Validate the captcha
+                            if (!validateCaptcha(userCaptchaAnswer)) {
+                                document.getElementById('modalMessage').textContent = "Incorrect captcha answer. Please try again.";
+                                document.getElementById('confirmationModal').style.display = 'block';
+                                return;
+                            }
+                
                             // Disable the submit button while sending the email
+                            const submitBtn = document.querySelector(".btn-submit");
                             submitBtn.disabled = true;
                             submitBtn.textContent = "Sending...";
-                    
-// Send email using EmailJS
-emailjs.send("service_2ay6a4i", "template_0tm7dw4", {
-    name: name,
-    email: email,
-    phone: phone,
-    message: message
-})
-.then(function(response) {
-    console.log("Email sent successfully", response);
-    // Extract sender's email address
-    var sender_email = email;
-    // Send confirmation email to the sender
-    emailjs.send("service_2ay6a4i", "template_p40kp6m", {
-        name: name,
-        sender_email: sender_email// Assuming you have sender's email
-    })
-    .then(function(response) {
-        submitBtn.classList.add("btn-success");
-        submitBtn.classList.add("btn");
-        submitBtn.textContent = "Email Sent Successfully";
-        submitBtn.disabled = true;                                
-    }, function(error) {
-        console.error("Confirmation email failed to send to sender", error);
-        submitBtn.classList.add("btn-danger");
-        submitBtn.textContent = "Email Sending Failed";
-    });
-
-}, function(error) {
-    console.error("Email failed to send", error);
-    submitBtn.classList.add("btn-danger");
-    submitBtn.textContent = "Email Sending Failed";
-})
-.finally(function() {
-    // Re-enable the submit button after sending email
-    submitBtn.disabled = true;
-});
+                
+                            // Send email using EmailJS
+                            emailjs.send("service_2ay6a4i", "template_0tm7dw4", {
+                                name: name,
+                                email: email,
+                                phone: phone,
+                                message: message
+                            })
+                            .then(function(response) {
+                                console.log("Email sent successfully", response);
+                                // Extract sender's email address
+                                var sender_email = email;
+                                // Send confirmation email to the sender
+                                emailjs.send("service_2ay6a4i", "template_p40kp6m", {
+                                    name: name,
+                                    sender_email: sender_email // Assuming you have sender's email
+                                })
+                                .then(function(response) {
+                                    //document.getElementById('modalMessage').textContent = "Email Sent Successfully";
+                                    //document.getElementById('confirmationModal').style.display = 'block';
+                                    submitBtn.classList.add("btn-success");
+                                    submitBtn.classList.add("btn");
+                                    submitBtn.textContent = "Email Sent Successfully";
+                                    submitBtn.disabled = true;
+                                }, function(error) {
+                                    console.error("Confirmation email failed to send to sender", error);
+                                    document.getElementById('modalMessage').textContent = "Email Sending Failed";
+                                    document.getElementById('confirmationModal').style.display = 'block';
+                                    submitBtn.classList.add("btn-danger");
+                                    submitBtn.textContent = "Email Sending Failed";
+                                });
+                
+                            }, function(error) {
+                                console.error("Email failed to send", error);
+                                document.getElementById('modalMessage').textContent = "Email Sending Failed";
+                                document.getElementById('confirmationModal').style.display = 'block';
+                                submitBtn.classList.add("btn-danger");
+                                submitBtn.textContent = "Email Sending Failed";
+                            })
+                            .finally(function() {
+                                // Re-enable the submit button after sending email
+                                submitBtn.disabled = false;
+                            });
                         });
+                
+                        // Initialize CAPTCHA on page load
+                        window.onload = function() {
+                            const captcha = generateCaptcha();
+                            document.getElementById('captcha-question').textContent = captcha.question +" = ";
+                            document.getElementById('captcha-answer').value = captcha.answer;
+                        };
                     </script>
                     
                 </section>
