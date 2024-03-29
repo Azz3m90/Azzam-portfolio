@@ -1418,7 +1418,7 @@ i{
 
 }
 
-.skill-card {
+.certificate-card {
   position: relative;
   background: var(--bg-secondary);
   width: 80px;
@@ -1430,7 +1430,7 @@ i{
   cursor: help;
 }
 
-.skill-card:hover .tooltip {
+.certificate-card:hover .tooltip {
   transform: translateY(0);
   opacity: 1;
 }
@@ -1453,3 +1453,7 @@ i{
 
   .certificate-toggle { margin-inline: 0; }
 
+  .certificate-card:hover .tooltip {
+    transform: translateY(0);
+    opacity: 1;
+  }
