@@ -982,6 +982,8 @@
                             </li>
                         </ul>
                     </div>
+                    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+
                     <form id="booking-form" method="post" class="contact-form">
                         <div class="form-wrapper">
                             <label for="name" class="form-label">Name</label>
@@ -1066,148 +1068,32 @@
                         </div>
                     </div>
                     <script>
-                        document.addEventListener("DOMContentLoaded", function() {
-                            const form = document.getElementById("booking-form");
-                            const submitButton = form.querySelector(".btn-submit");
-                            const captchaInput = form.querySelector('input[name="captcha"]');
-                            const captchaImage = document.getElementById('captcha_image');
-                            const confirmationModal = document.getElementById('confirmationModal');
-                            const modalMessage = document.getElementById('modalMessage');
+                        emailjs.init("service_2ay6a4i");
+                        document.getElementById("booking-form").addEventListener("submit", function(event) {
+                            event.preventDefault(); // Prevent the form from submitting normally
+                            
+                            // Get form values
+                            const name = document.getElementById("name").value;
+                            const email = document.getElementById("email").value;
+                            const phone = document.getElementById("phone").value;
+                            const message = document.getElementById("message").value;
                         
-                            form.addEventListener("submit", function(event) {
-                                event.preventDefault();
-                                submitForm();
+                            // Send email using EmailJS
+                            emailjs.send("service_2ay6a4i", "YOUR_TEMPLATE_ID", {
+                                name: name,
+                                email: email,
+                                phone: phone,
+                                message: message
+                            })
+                            .then(function(response) {
+                                console.log("Email sent successfully", response);
+                                alert("Email sent successfully");
+                            }, function(error) {
+                                console.error("Email failed to send", error);
+                                alert("Email failed to send");
                             });
-                        
-                            captchaImage.addEventListener("click", function() {
-                                refreshCaptcha();
-                            });
-                        
-                            function getCaptcha() {
-                                axios.get('./php/get-captcha.php')
-                                    .then(function(response) {
-                                        console.log('Captcha:', response.data.captcha);
-                                    })
-                                    .catch(function(error) {
-                                        console.error('Error fetching captcha:', error);
-                                    });
-                            }
-                        
-                            // Call this function whenever you want to get the value of captcha
-                            getCaptcha();
-                        
-                            function submitForm() {
-                                const captcha = captchaInput.value;
-                                const formData = new FormData(form);
-                                formData.append('captcha', captcha);
-                        
-                                // Validate email
-                                const emailInput = form.querySelector('input[name="email"]');
-                                const email = emailInput.value;
-                                if (!validateEmail(email)) {
-                                    openModal('Please enter a valid email address.');
-                                    emailInput.style.border = "1px solid red";
-                                    return false;
-                                }
-                        
-                                // Validate each required input field
-                                const inputs = form.querySelectorAll("[required]");
-                                let isValid = true;
-                                inputs.forEach(function(input) {
-                                    if (input.value.trim() === "") {
-                                        isValid = false;
-                                        // Add red border to empty required fields
-                                        input.style.border = "1px solid red";
-                                    } else {
-                                        // Reset border to default style
-                                        input.style.border = "";
-                                    }
-                                });
-                        
-                                if (!isValid) {
-                                    // If any required field is empty, show an error message and prevent form submission
-                                    openModal("Please fill in all required fields.");
-                                    return false;
-                                }
-                        
-                                axios.post('./php/validate-captcha.php', formData)
-                                    .then(response => {
-                                        if (response.data.valid) {
-                                            // Use AJAX to submit form data
-                                            submitButton.innerHTML =
-                                                '<span class="description">Submitting...</span>';
-                                            axios.post('./php/send_mail.php', formData)
-                                                .then(response => {
-                                                    console.log('Form submission response:', response.data);
-                                                    if (response.data === 'success') {
-                                                        submitButton.innerHTML =
-                                                            '<span class="description">Submition successful!</span>';
-                                                        submitButton.classList.remove('btn-secondary');
-                                                        submitButton.classList.remove('btn-submit');
-                                                        submitButton.classList.add('btn-success');
-                                                        submitButton.setAttribute('disabled', 'disabled');
-                                                    } else {
-                                                        openModal(
-                                                            'There was an error submitting the form. Please try again.'
-                                                        );
-                                                    }
-                                                })
-                                                .catch(error => {
-                                                    console.error('Error submitting form:', error);
-                                                    openModal(
-                                                        'There was an error submitting the form. Please try again.'
-                                                    );
-                                                });
-                                        } else {
-                                            openModal('The entered CAPTCHA code does not match. Please try again.');
-                                            refreshCaptcha();
-                                        }
-                                    })
-                                    .catch(error => {
-                                        console.error('Error validating CAPTCHA:', error);
-                                    });
-                            }
                         });
                         
-                        function refreshCaptcha(event) {
-                            if (event) {
-                                event.preventDefault();
-                            }
-                        
-                            var img = document.getElementById('captcha_image');
-                        
-                            axios.get('./php/captcha.php', {
-                                    params: {
-                                        rand: Math.random() * 1000
-                                    },
-                                    responseType: 'arraybuffer'
-                                })
-                                .then(function(response) {
-                                    var blob = new Blob([response.data], {
-                                        type: 'image/jpeg'
-                                    });
-                                    var imgUrl = URL.createObjectURL(blob);
-                                    img.src = imgUrl;
-                                    getCaptcha();
-                                })
-                                .catch(function(error) {
-                                    console.error('Error refreshing CAPTCHA:', error);
-                                });
-                        }
-                        
-                        function openModal(message) {
-                            modalMessage.innerText = message;
-                            confirmationModal.style.display = 'block';
-                        }
-                        
-                        function closeModal() {
-                            document.getElementById('confirmationModal').style.display = 'none';
-                        }
-                        
-                        function validateEmail(email) {
-                            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                            return emailRegex.test(email);
-                        }
                     </script>
                 </section>
                 <div class="map-container">
