@@ -1194,9 +1194,10 @@ Greetings! I'm Azzam Reacher, a proficient developer driven by the pursuit of ex
                     Azzam<span>.</span>
                     </a>
                 </p>
-                <p class="copyright">
-                    &copy; 2022 <a href="#" onclick="return false;" >Eng.Azzam Aziz Ali</a>. All rights reserved
-                </p>
+                <p class="copyright" id="currentYear">
+                    
+
+   
             </div>
         </footer>
         <!-- 
@@ -1208,6 +1209,12 @@ Greetings! I'm Azzam Reacher, a proficient developer driven by the pursuit of ex
         <!-- 
             - custom js link
             -->
+            <script>
+    // JavaScript code to get the current year and display it
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    document.getElementById("currentYear").innerHTML = '&copy; ' + currentYear+'<a href="#" onclick="return false;" > Eng.Azzam Aziz Ali</a>. All rights reserved</p>';
+  </script>
         <script src="./js/script.js"></script>
         <!-- 
             - ionicon link
