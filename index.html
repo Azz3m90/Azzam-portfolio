@@ -1113,6 +1113,10 @@ Greetings! I'm Azzam Reacher, a proficient developer driven by the pursuit of ex
                     // Change the src attribute of the image
                     document.getElementById("captchaImage").src = "./images/captcha_focused.png";
                 });
+                document.getElementById("captcha").addEventListener("blur", function() {
+                    // Change the src attribute of the image back to default
+                    document.getElementById("captchaImage").src = "./images/captcha.png";
+                });
                         // Function to generate a random arithmetic question
                         function generateCaptcha() {
                             const num1 = Math.floor(Math.random() * 10);
