@@ -1762,7 +1762,7 @@
                 <script
                     src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+                <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoad" async defer></script>
 
                 <form id="booking-form" method="post" class="contact-form">
                     <div class="form-wrapper">
@@ -1802,7 +1802,7 @@
                         </div>
                     </div>
                     <div class="form-wrapper">
-                        <div class="cf-turnstile" data-sitekey="0x4AAAAAACjhI98Fk0RqnlYp" data-theme="auto"></div>
+                        <div id="turnstile-widget"></div>
                     </div>
                     <button type="submit"
                         class="btn btn-primary btn-submit">Send</button>

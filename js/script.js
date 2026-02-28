@@ -89,6 +89,8 @@ themeToggleBtn.addEventListener("click", function () {
     localStorage.setItem("theme", "dark_theme");
   }
 
+  syncTurnstileTheme();
+
 });
 
 /**
@@ -103,6 +105,41 @@ if (localStorage.getItem("theme") === "light_theme") {
   themeToggleBtn.classList.remove("active");
   document.body.classList.remove("light_theme");
   document.body.classList.add("dark_theme");
+}
+
+/**
+ * Cloudflare Turnstile theme sync
+ */
+
+const TURNSTILE_SITEKEY = "0x4AAAAAACjhI98Fk0RqnlYp";
+const turnstileContainer = document.getElementById("turnstile-widget");
+let turnstileWidgetId = null;
+
+function getTurnstileTheme() {
+  return document.body.classList.contains("light_theme") ? "light" : "dark";
+}
+
+window.onTurnstileError = function () {};
+
+window.onTurnstileLoad = function () {
+  if (!turnstileContainer) return;
+  turnstileWidgetId = turnstile.render(turnstileContainer, {
+    sitekey: TURNSTILE_SITEKEY,
+    theme: getTurnstileTheme(),
+    "error-callback": window.onTurnstileError,
+  });
+};
+
+function syncTurnstileTheme() {
+  if (!turnstileContainer || typeof turnstile === "undefined") return;
+  if (turnstileWidgetId !== null) {
+    try { turnstile.remove(turnstileWidgetId); } catch (e) {}
+  }
+  turnstileWidgetId = turnstile.render(turnstileContainer, {
+    sitekey: TURNSTILE_SITEKEY,
+    theme: getTurnstileTheme(),
+    "error-callback": window.onTurnstileError,
+  });
 }
 
 // Certificate toggle
